@@ -1,1 +1,1 @@
-# dpg-external-overlay
+# external-overlay
