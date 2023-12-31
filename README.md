@@ -11,7 +11,7 @@ Install the following dependencies:
 - `pip install -r requirements.txt`
 
 ## Usage
-```
+``` python
 from external_overlay import ExternalOverlay
 
 def ui(tar_hwnd=None):
