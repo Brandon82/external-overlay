@@ -15,14 +15,14 @@ class MARGINS(ctypes.Structure):
     _fields_ = [("cxLeftWidth", c_int), ("cxRightWidth", c_int), ("cyTopHeight", c_int), ("cyBottomHeight", c_int)]
 
 class ExternalOverlay:
-    def __init__(self, target_window: str, ui_to_run: Callable, overlay_name: str = "Overlay") :
+    def __init__(self, target_window: str, ui_to_run: Callable, overlay_name: str = "Overlay"):
         self.target_window = target_window
         self.overlay_name = overlay_name
         self.ui_to_run = ui_to_run
         self.target_hwnd = None
         self.overlay_hwnd = None
     
-    def start(self, overlay_delay: float = 0.05) -> None:
+    def start(self, overlay_delay: float = 0.05):
         ui_thread = threading.Thread(target=self._init_ui)
         ui_thread.start()
         time.sleep(0.5)
@@ -31,7 +31,7 @@ class ExternalOverlay:
         hook_thread = threading.Thread(target=self._hook_to_target(overlay_delay))
         hook_thread.start()
 
-    def _set_handles(self) -> None:
+    def _set_handles(self):
         self.target_hwnd = win32gui.FindWindow(None, self.target_window)
         if not self.target_hwnd:
             raise Exception("Target Window not found.")
@@ -39,14 +39,14 @@ class ExternalOverlay:
         if not self.overlay_hwnd:
             raise Exception("Overlay Window not found.")
 
-    def _set_dpg_win_transparent(self) -> None:
+    def _set_dpg_win_transparent(self):
         # DPG does not support transparent window/viewport, so it has to be done manually
         margins = MARGINS(-1, -1,-1, -1)
         dwm.DwmExtendFrameIntoClientArea(self.overlay_hwnd, margins) 
         # Making the overlay click-through
         win32gui.SetWindowLong(self.overlay_hwnd, win32con.GWL_EXSTYLE, win32gui.GetWindowLong(self.overlay_hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED | win32con.WS_EX_TRANSPARENT )
 
-    def _hook_to_target(self, overlay_delay: float) -> None:
+    def _hook_to_target(self, overlay_delay: float):
         tar_rect = win32gui.GetWindowRect(self.target_hwnd)
         win32gui.SetWindowPos(self.overlay_hwnd, win32con.HWND_TOPMOST, tar_rect[0], tar_rect[1], tar_rect[2]-tar_rect[0], tar_rect[3]-tar_rect[1], win32con.SWP_NOZORDER)
         while True:
